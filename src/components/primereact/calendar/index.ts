@@ -1,0 +1,25 @@
+/* eslint-disable no-restricted-imports */
+export { Calendar } from "./Calendar";
+export type {
+    CalendarBaseProps,
+    CalendarContext,
+    CalendarDateTemplateEvent,
+    CalendarMonthChangeEvent,
+    CalendarMonthNavigatorTemplateEvent,
+    CalendarMonthOptions,
+    CalendarNavigatorTemplateEvent,
+    CalendarPassThroughMethodOptions,
+    CalendarPassThroughOptions,
+    CalendarPassThroughTransitionType,
+    CalendarPassThroughType,
+    CalendarProps,
+    CalendarPropsMultiple,
+    CalendarPropsRange,
+    CalendarPropsSingle,
+    CalendarSelectEvent,
+    CalendarState,
+    CalendarViewChangeEvent,
+    CalendarVisibleChangeEvent,
+    CalendarYearNavigatorTemplateEvent,
+    CalendarYearOptions,
+} from "primereact/calendar";

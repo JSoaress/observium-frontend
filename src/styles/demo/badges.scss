@@ -1,0 +1,117 @@
+.user-badge,
+.computer-badge,
+.printjob-badge,
+.product-badge,
+.order-badge {
+    border-radius: var(--border-radius);
+    padding: 0.25em 0.5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
+.product-badge {
+    &.status-instock {
+        background: #c8e6c9;
+        color: #256029;
+    }
+
+    &.status-outofstock {
+        background: #ffcdd2;
+        color: #c63737;
+    }
+
+    &.status-lowstock {
+        background: #feedaf;
+        color: #8a5340;
+    }
+}
+
+.computer-badge {
+    &.status-free {
+        background: #b3e5fc;
+        color: #23547b;
+    }
+
+    &.status-active {
+        background: #c8e6c9;
+        color: #256029;
+    }
+
+    &.status-blocked {
+        background: #ffcdd2;
+        color: #c63737;
+    }
+
+    &.status-offline {
+        background: #ffd8b2;
+        color: #805b36;
+    }
+}
+
+.printjob-badge {
+    &.state-new {
+        background: #b3e5fc;
+        color: #23547b;
+    }
+
+    &.state-printed {
+        background: #c8e6c9;
+        color: #256029;
+    }
+
+    &.state-error {
+        background: #ffcdd2;
+        color: #c63737;
+    }
+
+    &.state-queued {
+        background: #ffd8b2;
+        color: #805b36;
+    }
+
+    &.state-sent-to-client {
+        background: #eccfff;
+        color: #694382;
+    }
+}
+
+.user-badge {
+    &.status-active {
+        background: #c8e6c9;
+        color: #256029;
+    }
+
+    &.status-created {
+        background: #b3e5fc;
+        color: #23547b;
+    }
+
+    &.status-invited {
+        background: #eccfff;
+        color: #694382;
+    }
+}
+
+.order-badge {
+    &.order-delivered {
+        background: #c8e6c9;
+        color: #256029;
+    }
+
+    &.order-cancelled {
+        background: #ffcdd2;
+        color: #c63737;
+    }
+
+    &.order-pending {
+        background: #feedaf;
+        color: #8a5340;
+    }
+
+    &.order-returned {
+        background: #eccfff;
+        color: #694382;
+    }
+}
