@@ -18,12 +18,14 @@ import { faRocket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type FormValues = {
+    name: string;
     email: string;
     password: string;
     terms: boolean;
 };
 
 const defaultValues: FormValues = {
+    name: "",
     email: "",
     password: "",
     terms: false,
@@ -51,7 +53,7 @@ export const Form = () => {
             201: () => {
                 showSuccess({
                     summary: "Sucesso!",
-                    detail: "Usuário cadastrado com sucesso, visite seu email para confirmar a conta.",
+                    detail: "Usuário cadastrado com sucesso, visite seu email e siga as instruções.",
                     life: 2000,
                 });
                 setTimeout(redirectToLogin, 2000);
@@ -77,7 +79,6 @@ export const Form = () => {
     const generateStrongPassword = () => {
         const getRandom = (chars: string, count: number) =>
             Array.from({ length: count }, () => chars[Math.floor(Math.random() * chars.length)]);
-
         const lowerCase = "abcdefghijklmnopqrstuvwxyz";
         const upperCase = lowerCase.toUpperCase();
         const digits = "0123456789";
@@ -97,6 +98,29 @@ export const Form = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="field p-fluid">
+                <Label htmlFor="name" required className="block text-900 text-xl font-medium mb-2">
+                    Nome
+                </Label>
+                <Controller
+                    name="name"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <InputText
+                            id="name"
+                            type="text"
+                            {...field}
+                            placeholder="Informe seu nome"
+                            style={{ padding: "1rem" }}
+                            className={classNames("w-full mb-2", {
+                                "p-invalid": fieldState.invalid,
+                                "md:w-30rem": !fieldState.invalid,
+                            })}
+                        />
+                    )}
+                />
+                {errors.name && <small className="p-error">{errors.name.message}</small>}
+            </div>
             <div className="field p-fluid">
                 <Label htmlFor="email" required className="block text-900 text-xl font-medium mb-2">
                     E-mail
