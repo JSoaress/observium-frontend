@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle, useState, Ref } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import copy from "clipboard-copy";
 import { classNames } from "primereact/utils";
 
 import { YES_NO_OPTIONS } from "@/assets/constants/constants";
@@ -11,7 +12,7 @@ import { Dialog } from "@/components/primereact/dialog";
 import { InputText } from "@/components/primereact/inputtext";
 import { SelectButton } from "@/components/primereact/selectbutton";
 import { handleFormErrors } from "@/helpers/handle-form-errors";
-import { useHttp, useLoading } from "@/hooks";
+import { useHttp, useLoading, useToast } from "@/hooks";
 import { HttpResponseHandler } from "@/hooks/useHttp";
 import { Observium } from "@/types";
 
@@ -40,6 +41,7 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
     const [newAPIKey, setNewAPIKey] = useState<string>("");
     const [loading, suspend] = useLoading();
     const { httpPost } = useHttp();
+    const { showInfo } = useToast();
 
     const {
         control,
@@ -82,10 +84,10 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
 
     return (
         <Dialog
-            header="Incluindo API Key"
+            header="Incluindo chave de API"
             visible={visible}
             onHide={close}
-            style={{ width: "50vw" }}
+            style={{ width: "35vw" }}
             headerClassName="background-pink"
             contentClassName="background-pink"
         >
@@ -109,7 +111,7 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
                         {errors.alias && <small className="p-error">{errors.alias.message}</small>}
                     </FormGrid.Col>
                     <FormGrid.Col md="2">
-                        <Label htmlFor="active">Ativo?</Label>
+                        <Label htmlFor="active">Ativa?</Label>
                         <Controller
                             control={control}
                             name="active"
@@ -129,11 +131,29 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
                 <FormButtons loading={loading} resetButton={{ onClick: close }} />
             </form>
             {newAPIKey && (
-                <div>
-                    <span>
-                        Sua nova chave de API é: <b>{newAPIKey}</b>. Copie e guarde-a em um local seguro, pois ela não será
-                        visível novamente.
-                    </span>
+                <div className="pt-3">
+                    <span>Copie sua nova chave agora. Você não consegui-rá vê-la novamente.</span>
+                    <pre className="app-code">
+                        <code>
+                            <div className="flex flex-wrap align-items-center justify-content-between">
+                                {newAPIKey}
+                                <button
+                                    type="button"
+                                    className="p-link"
+                                    onClick={async () => {
+                                        await copy(newAPIKey);
+                                        showInfo({
+                                            summary: "Info",
+                                            detail: "Chave de API copiada com sucesso.",
+                                            life: 2000,
+                                        });
+                                    }}
+                                >
+                                    <i className={`pi pi-fw pi-copy text-xl text-blue-500`} />
+                                </button>
+                            </div>
+                        </code>
+                    </pre>
                 </div>
             )}
         </Dialog>
