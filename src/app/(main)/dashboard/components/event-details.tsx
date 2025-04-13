@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { JsonView, allExpanded, darkStyles, defaultStyles } from "react-json-view-lite";
+import { JsonView, allExpanded, defaultStyles } from "react-json-view-lite";
 
 import { Dialog } from "@/components/primereact/dialog";
 import { useHttp } from "@/hooks";
@@ -25,6 +25,7 @@ const ModalEventDetails = forwardRef<ModalEventDetailsRef>((props, ref) => {
 
     const close = () => {
         setEventId("");
+        setEvent(null);
         setVisible(false);
     };
 
