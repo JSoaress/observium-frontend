@@ -20,10 +20,10 @@ const AppMenu = () => {
             label: "Analytics",
             items: [{ label: "Eventos", icon: "pi pi-fw pi-chart-bar", to: "/analytics/events" }],
         },
-        {
-            label: "Gestão",
-            items: [{ label: "Pagamentos", icon: "pi pi-fw pi-money-bill", to: "/management/payments" }],
-        },
+        // {
+        //     label: "Gestão",
+        //     items: [{ label: "Pagamentos", icon: "pi pi-fw pi-money-bill", to: "/management/payments" }],
+        // },
     ];
 
     return (
