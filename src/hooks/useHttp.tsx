@@ -14,15 +14,11 @@ type HttpRequest = {
     body?: unknown;
     params?: Record<string, unknown>;
     headers?: Record<string, string | string[]>;
+    signal?: GenericAbortSignal;
 };
 
 type HttpRequestFull = HttpRequest & {
     method: HttpMethod;
-    signal?: GenericAbortSignal;
-};
-
-type HttpGetRequest = HttpRequest & {
-    signal: GenericAbortSignal;
 };
 
 type ResponseOrError<D> = {
@@ -133,7 +129,7 @@ export const useHttp = () => {
     );
 
     const httpGet = useCallback(
-        async <D = any,>(input: HttpGetRequest, handlers?: HttpResponseHandler<D>) => {
+        async <D = any,>(input: HttpRequest, handlers?: HttpResponseHandler<D>) => {
             await request({ ...input, method: "get" }, handlers);
         },
         [request],
