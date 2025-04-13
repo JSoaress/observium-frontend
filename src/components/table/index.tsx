@@ -43,7 +43,7 @@ export type TableRef = {
 };
 
 const Component = <TValue extends DataTableValueArray>(
-    { columns, url, afterSearch, ...props }: TableProps<TValue>,
+    { columns, url, afterSearch, filters, ...props }: TableProps<TValue>,
     ref: Ref<TableRef>,
 ) => {
     const [data, setData] = useState<TValue>();
@@ -52,6 +52,7 @@ const Component = <TValue extends DataTableValueArray>(
         first: 0,
         rows: 20,
         page: 0,
+        filters,
     });
     const [loading, suspend] = useLoading();
     const { httpGet } = useHttp();
@@ -67,6 +68,14 @@ const Component = <TValue extends DataTableValueArray>(
                 const [k, v] = opt.split("=");
                 params[k] = v;
             });
+            if (lazyParams.filters) {
+                Object.entries(lazyParams.filters).forEach(([col, filter]) => {
+                    const [constraint] = filter.constraints;
+                    if (constraint.value instanceof Date)
+                        params[col] = formatDate(constraint.value, "yyyy-MM-ddT03:00:00:00");
+                    else params[col] = constraint.value;
+                });
+            }
             const handlers: HttpResponseHandler<{ count: number; results: any }> = {
                 200: async ({ data }) => {
                     const { count, results } = data!;
