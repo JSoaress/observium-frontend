@@ -1,7 +1,7 @@
 {
     "name": "observium-frontend",
-    "version": "0.2.0",
-    "date": "2025-04-09",
+    "version": "0.3.0",
+    "date": "2025-04-13",
     "repository": "git@github.com:JSoaress/observium-frontend.git",
     "author": "João Vitor <joao_vitorsgs@hotmail.com>",
     "private": true,
