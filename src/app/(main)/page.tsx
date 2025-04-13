@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { Dropdown } from "@/components/primereact/dropdown";
+import { DropdownProjects } from "@/components/dropdown-projects";
 import { useHttp } from "@/hooks";
 import { HttpResponseHandler } from "@/hooks/useHttp";
 import { Observium } from "@/types";
@@ -50,15 +50,7 @@ const Dashboard = () => {
 
     return (
         <>
-            <Dropdown
-                url="/projects"
-                value={selectedProjectId}
-                onChange={(e) => setSelectedProjectId(e.value)}
-                placeholder="Selecione o projeto"
-                optionValue="id"
-                optionLabel="name"
-                className="mb-3"
-            />
+            <DropdownProjects value={selectedProjectId} onChange={(e) => setSelectedProjectId(e.value)} className="mb-3" />
             <div className="grid">
                 <Indicators dailyLogs={dailyLogs} />
                 <div className="col-12 md:col-12 xl:col-8">
