@@ -70,10 +70,13 @@ const Component = <TValue extends DataTableValueArray>(
             });
             if (lazyParams.filters) {
                 Object.entries(lazyParams.filters).forEach(([col, filter]) => {
-                    const [constraint] = filter.constraints;
-                    if (constraint.value instanceof Date)
-                        params[col] = formatDate(constraint.value, "yyyy-MM-ddT03:00:00:00");
-                    else params[col] = constraint.value;
+                    if (filter.constraints) {
+                        const [constraint] = filter.constraints;
+                        if (constraint.value) params[col] = constraint.value;
+                    } else {
+                        const { value } = filter;
+                        if (value) params[col] = value;
+                    }
                 });
             }
             const handlers: HttpResponseHandler<{ count: number; results: any }> = {
