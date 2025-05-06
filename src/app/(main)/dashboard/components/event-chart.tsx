@@ -18,11 +18,14 @@ export const EventsChart = ({ hourlyLogs }: EventsChartProps) => {
             .fill(null)
             .map<string>((_, i) => `${`${i}`.padStart(2, "0")}:00`);
         const logsDataset = Array(hours + 1).fill(0);
-        const errorsDataset = Array(hours + 1).fill(0);
+        const failDataset = Array(hours + 1).fill(0);
+        const warnDataset = Array(hours + 1).fill(0);
         hourlyLogs.forEach((hourlyLog) => {
-            const hourLog = new Date(hourlyLog.date).getHours();
-            logsDataset[hourLog] = hourlyLog.logs;
-            errorsDataset[hourLog] = hourlyLog.error + hourlyLog.critical;
+            const { date, logs, warning, error, critical, alert, emergency } = hourlyLog;
+            const hourLog = new Date(date).getHours();
+            logsDataset[hourLog] = logs;
+            warnDataset[hourLog] = warning;
+            failDataset[hourLog] = error + critical + alert + emergency;
         });
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue("--text-color");
@@ -38,8 +41,14 @@ export const EventsChart = ({ hourlyLogs }: EventsChartProps) => {
                     borderColor: documentStyle.getPropertyValue("--primary-color"),
                 },
                 {
-                    label: "Erros / Críticos",
-                    data: errorsDataset,
+                    label: "Warnings",
+                    data: warnDataset,
+                    fill: false,
+                    borderColor: documentStyle.getPropertyValue("--yellow-500"),
+                },
+                {
+                    label: "Falhas (error | critical | alert | emergency)",
+                    data: failDataset,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue("--red-500"),
                 },

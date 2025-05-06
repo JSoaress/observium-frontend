@@ -1,5 +1,6 @@
 import { useRef } from "react";
 
+import { LOG_LEVELS, LOG_TYPES } from "@/assets/constants/constants";
 import { formatDate } from "@/helpers/formatters";
 import { Observium } from "@/types";
 
@@ -12,17 +13,19 @@ type EventInfoProps = {
 export const EventInfo = ({ event }: EventInfoProps) => {
     const modalEventDetailsRef = useRef<ModalEventDetailsRef>(null);
 
-    function color(level: string): string {
-        if (level === "critical" || level === "error") return "red";
-        if (level === "warn") return "yellow";
-        if (level === "info") return "blue";
-        return "green";
+    function color(level: Observium.LogLevels): string {
+        const logLevel = LOG_LEVELS.find((lv) => lv.value === level);
+        return logLevel?.color || "red";
     }
 
-    function icon(type: string): string {
-        if (type === "HTTP") return "pi-code";
-        if (type === "SERVER-ACTION") return "pi-file";
-        return "pi-wave-pulse";
+    function icon(type: Observium.LogType): string {
+        const logType = LOG_TYPES.find((tp) => tp.value === type);
+        return logType?.icon || "pi-wave-pulse";
+    }
+
+    function message(msg: string): string {
+        if (msg.length > 25) return `${msg.substring(0, 25)}...`;
+        return msg;
     }
 
     function formatCreatedAt(date: Date | string | number): string {
@@ -72,11 +75,7 @@ export const EventInfo = ({ event }: EventInfoProps) => {
                                     <i className={`pi pi-fw ${icon(event.type)} text-xl text-${color(event.level)}-700`} />
                                 </div>
                                 <div className="flex">
-                                    <h5 className="m-0 text-600 mr-3">{event.method}</h5>
-                                    <h5 className="m-0 text-400 mr-4">{event.path}</h5>
-                                    <span style={{ color: `var(--${color(event.level)}-400)` }}>
-                                        {event.statusCode || event.statusText || ""}
-                                    </span>
+                                    <h5 className="m-0 text-400 mr-4">{message(event.message)}</h5>
                                 </div>
                             </div>
                             <div>
@@ -92,8 +91,12 @@ export const EventInfo = ({ event }: EventInfoProps) => {
                         <div style={{ marginLeft: "3.5rem" }}>
                             <i className="pi pi-fw pi-clock text-400 mr-1" />
                             <span className="text-400 mr-4">{formatCreatedAt(event.createdAt)}</span>
-                            <i className="pi pi-fw pi-stopwatch text-400 mr-1" />
-                            <span className="text-400">{formatDuration(event.duration)}</span>
+                            {event.duration && (
+                                <>
+                                    <i className="pi pi-fw pi-stopwatch text-400 mr-1" />
+                                    <span className="text-400">{formatDuration(event.duration)}</span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

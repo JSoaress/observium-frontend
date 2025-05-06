@@ -1,23 +1,14 @@
+import { LOG_LEVELS } from "@/assets/constants/constants";
 import { Dropdown, DropdownProps } from "@/components/primereact/dropdown";
 import { Tag } from "@/components/primereact/tag";
 
 type DropdownLogLevelsProps = Omit<DropdownProps, "url" | "options" | "optionValue" | "optionLabel">;
 
-const LOG_LEVELS = [
-    { value: "silly" },
-    { value: "debug" },
-    { value: "info" },
-    { value: "warn" },
-    { value: "error" },
-    { value: "critical" },
-];
-
 export const DropdownLogLevels = (props: DropdownLogLevelsProps) => {
     const logLevelOptionTemplate = ({ value }: { value: string }) => {
-        if (value === "silly" || value === "debug") return <Tag value={value.toUpperCase()} severity="success" />;
-        if (value === "info") return <Tag value={value.toUpperCase()} severity="info" />;
-        if (value === "warn") return <Tag value={value.toUpperCase()} severity="warning" />;
-        return <Tag value={value.toUpperCase()} severity="danger" />;
+        const logLevel = LOG_LEVELS.find((level) => level.value === value);
+        if (!logLevel) return <Tag value={value.toUpperCase()} severity="danger" />;
+        return <Tag value={logLevel.label.toUpperCase()} severity={logLevel.severity} />;
     };
 
     const selectedLogLevelTemplate = (option: { value: string }, props: DropdownProps) => {

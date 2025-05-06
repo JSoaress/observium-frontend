@@ -1,31 +1,22 @@
+import { LOG_TYPES } from "@/assets/constants/constants";
 import { Dropdown, DropdownProps } from "@/components/primereact/dropdown";
 
 type DropdownLogTypesProps = Omit<DropdownProps, "url" | "options" | "optionValue" | "optionLabel">;
 
-const LOG_TYPES = [{ value: "HTTP" }, { value: "SERVER-ACTION" }, { value: "OTHER" }];
-
 export const DropdownLogTypes = (props: DropdownLogTypesProps) => {
     const logTypeOptionTemplate = ({ value }: { value: string }) => {
-        if (value === "HTTP") {
+        const logType = LOG_TYPES.find((type) => type.value === value);
+        if (!logType)
             return (
                 <span>
-                    <i className="pi pi-fw pi-code text-blue-500 mr-2" />
+                    <i className="pi pi-fw pi-wave-pulse mr-2" />
                     {value}
                 </span>
             );
-        }
-        if (value === "SERVER-ACTION") {
-            return (
-                <span>
-                    <i className="pi pi-fw pi-sync text-green-500 mr-2" />
-                    {value}
-                </span>
-            );
-        }
         return (
             <span>
-                <i className="pi pi-fw pi-clone text-red-500 mr-2" />
-                {value}
+                <i className={`pi pi-fw ${logType.icon} mr-2`} />
+                {logType.label}
             </span>
         );
     };

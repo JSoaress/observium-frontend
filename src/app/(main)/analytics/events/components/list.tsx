@@ -2,10 +2,10 @@ import { useRef } from "react";
 
 import { FilterMatchMode } from "primereact/api";
 
+import { LOG_LEVELS, LOG_TYPES } from "@/assets/constants/constants";
 import { BUTTON_COLUMN_BASE } from "@/assets/constants/presets";
 import { Button } from "@/components/primereact/button";
 import { DataTableFilterMeta, ColumnFilterElementTemplateOptions } from "@/components/primereact/datatable";
-import { InputText } from "@/components/primereact/inputtext";
 import { Tag } from "@/components/primereact/tag";
 import { ColumnTableProps, Table } from "@/components/table";
 import { Title } from "@/components/title";
@@ -29,40 +29,35 @@ export const EventList = ({ projectId }: EventListProps) => {
     const modalEventDetailsRef = useRef<ModalEventDetailsRef>(null);
 
     const typeBodyTemplate = (rowData: Observium.SimplifiedLog) => {
-        if (rowData.type === "HTTP") {
+        const logType = LOG_TYPES.find((type) => type.value === rowData.type);
+        if (!logType)
             return (
                 <span>
-                    <i className="pi pi-fw pi-code text-blue-500 mr-2" />
+                    <i className="pi pi-fw pi-wave-pulse mr-2" />
                     {rowData.type}
                 </span>
             );
-        }
-        if (rowData.type === "SERVER-ACTION") {
-            return (
-                <span>
-                    <i className="pi pi-fw pi-sync text-green-500 mr-2" />
-                    {rowData.type}
-                </span>
-            );
-        }
         return (
             <span>
-                <i className="pi pi-fw pi-clone text-red-500 mr-2" />
-                {rowData.type}
+                <i className={`pi pi-fw ${logType.icon} mr-2`} />
+                {logType.label}
             </span>
         );
     };
 
     const levelBodyTemplate = (rowData: Observium.SimplifiedLog) => {
-        if (rowData.level === "silly" || rowData.level === "debug")
-            return <Tag value={rowData.level.toUpperCase()} severity="success" />;
-        if (rowData.level === "info") return <Tag value={rowData.level.toUpperCase()} severity="info" />;
-        if (rowData.level === "warn") return <Tag value={rowData.level.toUpperCase()} severity="warning" />;
-        return <Tag value={rowData.level.toUpperCase()} severity="danger" />;
+        const logLevel = LOG_LEVELS.find((level) => level.value === rowData.level);
+        if (!logLevel) return <Tag value={rowData.level.toUpperCase()} severity="danger" />;
+        return <Tag value={logLevel.label.toUpperCase()} severity={logLevel.severity} />;
     };
 
-    const statusBodyTemplate = (rowData: Observium.SimplifiedLog) => {
-        return <span>{rowData.statusCode || rowData.statusText}</span>;
+    const messageBodyTemplate = (rowData: Observium.SimplifiedLog) => {
+        if (rowData.message.length > 60) return `${rowData.message.substring(0, 60)}...`;
+        return rowData.message;
+    };
+
+    const tagsBodyTemplate = (rowData: Observium.SimplifiedLog) => {
+        return <span>{rowData.tags.join(", ")}</span>;
     };
 
     const actionBodyTemplate = (rowData: Observium.SimplifiedLog) => {
@@ -84,15 +79,11 @@ export const EventList = ({ projectId }: EventListProps) => {
         return <DropdownLogLevels value={options.value} onChange={(e) => options.filterCallback(e.target.value)} />;
     };
 
-    const pathFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
-        return <InputText value={options.value} onChange={(e) => options.filterCallback(e.target.value)} />;
-    };
-
     const columns: ColumnTableProps[] = [
         {
             field: "type",
             header: "Tipo",
-            style: { width: "12%" },
+            style: { width: "10%" },
             filter: true,
             showFilterMenuOptions: false,
             filterElement: typeFilterTemplate,
@@ -107,10 +98,15 @@ export const EventList = ({ projectId }: EventListProps) => {
             filterElement: levelFilterTemplate,
             body: levelBodyTemplate,
         },
-        { field: "path", header: "Path", filter: true, showFilterMenuOptions: false, filterElement: pathFilterTemplate },
-        { field: "method", header: "Método" },
-        { field: "status", header: "Status", body: statusBodyTemplate },
-        { field: "createdAt", header: "Data criação", format: "date", dateFormat: "dd/MM/yyyy HH:mm:ss" },
+        { field: "message", header: "Mensagem", body: messageBodyTemplate },
+        { field: "tags", header: "Tags", body: tagsBodyTemplate },
+        {
+            field: "createdAt",
+            header: "Data criação",
+            format: "date",
+            dateFormat: "dd/MM/yyyy HH:mm:ss",
+            style: { width: "15%" },
+        },
         {
             field: "_actions",
             header: "Ações",
