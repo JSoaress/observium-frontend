@@ -10,10 +10,14 @@ const AppMenu = () => {
             items: [{ label: "Dashboard", icon: "pi pi-fw pi-chart-bar", to: "/" }],
         },
         {
-            label: "Usuário",
+            label: "Organização",
+            items: [{ label: "Workspace", icon: "pi pi-fw pi-building", to: "/users/workspaces" }],
+        },
+        {
+            label: "Projetos",
             items: [
-                { label: "API Keys", icon: "pi pi-fw pi-key", to: "/users/api-keys" },
                 { label: "Projetos", icon: "pi pi-fw pi-briefcase", to: "/users/projects" },
+                { label: "API Keys", icon: "pi pi-fw pi-key", to: "/users/api-keys" },
             ],
         },
         {
