@@ -1,11 +1,11 @@
 import { EmptyPage } from "@/components/empty-page";
 
-import { PlansList } from "./components";
+import { ProjectsList } from "./components";
 
 const ProjectsPage = () => {
     return (
         <EmptyPage>
-            <PlansList />
+            <ProjectsList />
         </EmptyPage>
     );
 };

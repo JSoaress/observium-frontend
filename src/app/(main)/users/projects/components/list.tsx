@@ -5,13 +5,12 @@ import * as presets from "@/assets/constants/presets";
 import { Button } from "@/components/primereact/button";
 import { ColumnTableProps, Table, TableRef } from "@/components/table";
 import { Title } from "@/components/title";
-import { SharkDev } from "@/types";
 
 import { ModalAddProject, ModalAddProjectRef } from "./modal-add-project";
 
-const URL = "/projects";
+const URL = "/organizations/workspaces/projects";
 
-export const PlansList = () => {
+export const ProjectsList = () => {
     const tableRef = useRef<TableRef>(null);
     const modalAddProjectRef = useRef<ModalAddProjectRef>(null);
 
@@ -19,8 +18,8 @@ export const PlansList = () => {
         await tableRef.current?.findData();
     };
 
-    const actionBodyTemplate = (rowData: SharkDev.PlanDetailed) => {
-        return <Button {...presets.BUTTON_COLUMN_EDIT} disabled onClick={() => modalAddProjectRef.current?.open(rowData)} />;
+    const actionBodyTemplate = () => {
+        return <Button {...presets.BUTTON_COLUMN_EDIT} disabled />;
     };
 
     const columns: ColumnTableProps[] = [

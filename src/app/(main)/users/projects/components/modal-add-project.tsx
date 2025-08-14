@@ -7,11 +7,12 @@ import { FormButtons } from "@/components/form-buttons";
 import { FormGrid } from "@/components/form-grid";
 import { Label } from "@/components/label";
 import { Dialog } from "@/components/primereact/dialog";
+import { Dropdown } from "@/components/primereact/dropdown";
 import { InputText } from "@/components/primereact/inputtext";
 import { handleFormErrors } from "@/helpers/handle-form-errors";
 import { useHttp, useLoading } from "@/hooks";
 import { HttpResponseHandler } from "@/hooks/useHttp";
-import { SharkDev } from "@/types";
+import { Observium } from "@/types";
 
 type FormValues = {
     id?: string;
@@ -19,6 +20,7 @@ type FormValues = {
     description: string;
     slug: string;
     url: string;
+    workspaceId: string;
 };
 
 const defaultValues: FormValues = {
@@ -26,6 +28,7 @@ const defaultValues: FormValues = {
     description: "",
     slug: "",
     url: "",
+    workspaceId: "",
 };
 
 type ModalAddProjectProps = {
@@ -33,7 +36,7 @@ type ModalAddProjectProps = {
 };
 
 export type ModalAddProjectRef = {
-    open(plan?: SharkDev.PlanDetailed, readOnly?: boolean): void;
+    open(project?: Observium.Project, readOnly?: boolean): void;
 };
 
 const Modal = ({ onSave }: ModalAddProjectProps, ref: Ref<ModalAddProjectRef>) => {
@@ -65,11 +68,12 @@ const Modal = ({ onSave }: ModalAddProjectProps, ref: Ref<ModalAddProjectRef>) =
                 });
             },
         };
-        if (addMode) suspend(async () => await httpPost({ url: "/projects", body: values }, handlers));
-        else suspend(async () => await httpPatch({ url: `/projects/${values.id}`, body: values }, handlers));
+        const url = `/organizations/workspaces/${values.workspaceId}/projects`;
+        if (addMode) suspend(async () => await httpPost({ url, body: values }, handlers));
+        else suspend(async () => await httpPatch({ url: `${url}/${values.id}`, body: values }, handlers));
     };
 
-    const open = (plan?: SharkDev.PlanDetailed, readOnly?: boolean) => {
+    const open = (project?: Observium.Project, readOnly?: boolean) => {
         setReadOnly(!!readOnly);
         setVisible(true);
     };
@@ -86,16 +90,29 @@ const Modal = ({ onSave }: ModalAddProjectProps, ref: Ref<ModalAddProjectRef>) =
     const header = addMode ? "Incluindo projeto" : "Editando projeto";
 
     return (
-        <Dialog
-            header={header}
-            visible={visible}
-            onHide={close}
-            style={{ width: "50vw" }}
-            headerClassName="background-pink"
-            contentClassName="background-pink"
-        >
+        <Dialog header={header} visible={visible} onHide={close} style={{ width: "50vw" }}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGrid.Row>
+                    <FormGrid.Col md="3">
+                        <Label htmlFor="workspace" required>
+                            Workspace
+                        </Label>
+                        <Controller
+                            control={control}
+                            name="workspaceId"
+                            render={({ field, fieldState }) => (
+                                <Dropdown
+                                    id="workspace"
+                                    url="/organizations/workspaces"
+                                    optionValue="id"
+                                    optionLabel="name"
+                                    {...field}
+                                    className={classNames({ "p-invalid": fieldState.invalid })}
+                                />
+                            )}
+                        />
+                        {errors.workspaceId && <small className="p-error">{errors.workspaceId.message}</small>}
+                    </FormGrid.Col>
                     <FormGrid.Col md="3">
                         <Label htmlFor="name" required>
                             Nome do projeto
@@ -113,7 +130,7 @@ const Modal = ({ onSave }: ModalAddProjectProps, ref: Ref<ModalAddProjectRef>) =
                         />
                         {errors.name && <small className="p-error">{errors.name.message}</small>}
                     </FormGrid.Col>
-                    <FormGrid.Col md="9">
+                    <FormGrid.Col md="6">
                         <Label htmlFor="description">Descrição</Label>
                         <Controller
                             control={control}
