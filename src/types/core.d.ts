@@ -1,9 +1,21 @@
 declare namespace Observium {
+    type Workspace = {
+        id: string;
+        name: string;
+    };
+    type Project = {
+        id: string;
+        name: string;
+        description: string | null;
+        slug: string;
+        url: string | null;
+        workspaceId: string;
+    };
     type APIKey = {
         id: string;
         alias: string;
         key: string;
-        userId: string;
+        projectId: string;
         expiresIn: Date | null;
         active: boolean;
     };
