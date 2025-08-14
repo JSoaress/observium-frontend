@@ -5,7 +5,7 @@ type DropdownProjectsProps = Omit<DropdownProps, "url" | "options">;
 export const DropdownProjects = (props: DropdownProjectsProps) => {
     return (
         <Dropdown
-            url="/projects"
+            url="/organizations/workspaces/projects"
             optionValue="id"
             optionLabel="name"
             placeholder="Selecione um projeto"
