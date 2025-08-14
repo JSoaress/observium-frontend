@@ -9,6 +9,7 @@ import { FormButtons } from "@/components/form-buttons";
 import { FormGrid } from "@/components/form-grid";
 import { Label } from "@/components/label";
 import { Dialog } from "@/components/primereact/dialog";
+import { Dropdown } from "@/components/primereact/dropdown";
 import { InputText } from "@/components/primereact/inputtext";
 import { SelectButton } from "@/components/primereact/selectbutton";
 import { handleFormErrors } from "@/helpers/handle-form-errors";
@@ -20,11 +21,13 @@ type FormValues = {
     id?: string;
     alias: string;
     active: boolean;
+    projectId: string;
 };
 
 const defaultValues: FormValues = {
     alias: "",
     active: true,
+    projectId: "",
 };
 
 type ModalAddAPIKeyProps = {
@@ -65,7 +68,8 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
                 });
             },
         };
-        suspend(async () => await httpPost({ url: "/users/api-keys", body: values }, handlers));
+        const url = `/projects/${values.projectId}/api-keys`;
+        suspend(async () => await httpPost({ url, body: values }, handlers));
     };
 
     const open = () => {
@@ -83,17 +87,30 @@ const Modal = ({ onSave }: ModalAddAPIKeyProps, ref: Ref<ModalAddAPIKeyRef>) => 
     useImperativeHandle(ref, () => ({ open }));
 
     return (
-        <Dialog
-            header="Incluindo chave de API"
-            visible={visible}
-            onHide={close}
-            style={{ width: "35vw" }}
-            headerClassName="background-pink"
-            contentClassName="background-pink"
-        >
+        <Dialog header="Incluindo chave de API" visible={visible} onHide={close} style={{ width: "50vw" }}>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormGrid.Row>
-                    <FormGrid.Col md="10">
+                    <FormGrid.Col md="3">
+                        <Label htmlFor="project" required>
+                            Projeto
+                        </Label>
+                        <Controller
+                            control={control}
+                            name="projectId"
+                            render={({ field, fieldState }) => (
+                                <Dropdown
+                                    id="project"
+                                    url="/organizations/workspaces/projects"
+                                    optionValue="id"
+                                    optionLabel="name"
+                                    {...field}
+                                    className={classNames({ "p-invalid": fieldState.invalid })}
+                                />
+                            )}
+                        />
+                        {errors.projectId && <small className="p-error">{errors.projectId.message}</small>}
+                    </FormGrid.Col>
+                    <FormGrid.Col md="7">
                         <Label htmlFor="alias" required>
                             Descrição
                         </Label>

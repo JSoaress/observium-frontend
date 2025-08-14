@@ -59,7 +59,7 @@ export const ServicesList = () => {
 
     return (
         <>
-            <Table ref={tableRef} columns={columns} url="/users/api-keys" header={header} paginator />
+            <Table ref={tableRef} columns={columns} url="/projects/api-keys" header={header} paginator />
             <ModalAddAPIKey ref={modalAddAPIKeyRef} onSave={refreshList} />
         </>
     );
